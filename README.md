@@ -3,7 +3,7 @@
 
 A MLOps pipeline that transforms e-commerce behavior data into real-time purchase predictions. Built on modern open-source technologies including Kafka, Flink, Spark, Ray, and MLflow, this project demonstrates a complete ML lifecycle from data ingestion through model deployment. The system features automated CDC, multi-layer data warehousing, real-time feature serving, and comprehensive observability.
 
-![Architecture](./docs/pipeline.png) <img width="4655" height="3296" alt="pipeline" src="https://github.com/user-attachments/assets/be9c28af-a3e2-4cd7-9296-f3195dabc740" />
+ <img width="4655" height="3296" alt="pipeline" src="https://github.com/user-attachments/assets/be9c28af-a3e2-4cd7-9296-f3195dabc740" />
 
 
 ## 📑 Table of Contents
