@@ -1,4 +1,3 @@
-# Customer-Purchase-Prediction
 
 # 🚀 Customer Purchase Prediction ML System
 
