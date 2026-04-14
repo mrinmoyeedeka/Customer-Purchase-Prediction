@@ -8,7 +8,7 @@ A MLOps pipeline that transforms e-commerce behavior data into real-time purchas
 
 ## 📑 Table of Contents
 
-- [📊 Dataset](#-dataset)
+  - [📊 Dataset](#-dataset)
   - [File Structure](#file-structure)
   - [Event Types](#event-types)
   - [Modeling: Customer Purchase Prediction](#modeling-customer-purchase-prediction)
