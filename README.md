@@ -330,11 +330,13 @@ Steps involved:
 
 The data is automatically synced from PostgreSQL to the `tracking_postgres_cdc.public.events` topic. To confirm this, go to the `Connect` tab in the Kafka UI; you should see a connector named `cdc-postgresql`.
 
-![Kafka Connectors](./docs/images/kafka-connectors.jpg)
+![kafka-connectors](https://github.com/user-attachments/assets/7e3ba114-8cc1-4a1a-9437-f8ceb69b2d8c)
+
 
 Return to `localhost:9021`; there should be a new topic called `tracking_postgres_cdc.public.events`.
 
-![Kafka Topics](./docs/images/kafka-topic-cdc.jpg)
+![kafka-topic-cdc](https://github.com/user-attachments/assets/8a7d25e3-6a1d-4b34-8997-36be73a7a4aa)
+
 
 ### ✅ Start Schema Validation Job
 
@@ -344,13 +346,15 @@ make schema_validation
 
 This is a Flink job that will consume the `tracking_postgres_cdc.public.events` and `tracking.raw_user_behavior` topics and validate the schema of the events. The validated events will be sent to the `tracking.user_behavior.validated` topic and the invalid events will be sent to the `tracking.user_behavior.invalid` topic, respectively. For easier understanding, I don't push these Flink jobs into a Docker Compose file, but you can do it if you want. Watch the terminal to see the job running, the log may look like this:
 
-![Schema Validation Job](./docs/images/schema-validation-job-log.jpg)
+![kafka-topic-cdc](https://github.com/user-attachments/assets/13f6e1dd-81ef-46c5-ad40-a4eebdc05290)
+
 
 We can handle `10k RPS`, noting that approximately `10%` of events are failures. I purposely make the producer send invalid events to the `tracking.user_behavior.invalid` topic. You can check this at line `127` in `src/producer/produce.py`.
 
 After starting the job, you can go to `localhost:9021` and you should see the `tracking.user_behavior.validated` and `tracking.user_behavior.invalid` topics.
 
-![Kafka Topics](./docs/images/kafka-topic-schema-validation.jpg)
+![kafka-topic-schema-validation](https://github.com/user-attachments/assets/2319892e-c046-4f3c-acd8-1231838f5607)
+
 
 Beside that, we can also start the `alert_invalid_events` job to alert the invalid events.
 
@@ -399,11 +403,13 @@ This is a **Spark Streaming** job that consumes events from the `tracking.user_b
 
 The terminal will look like this:
 
-![Spark Streaming Job](./docs/images/spark-streaming-job.jpg)
+![spark-streaming-job](https://github.com/user-attachments/assets/e214cce2-0af2-44db-bbd6-f244798cb212)
+
 
 Beside that, you can use any tool to visualize the offline store, for example, you can use `DataGrip` to connect to the `dwh` database and you should see the `feature_store` schema.
 
-![DataGrip Offline Store](./docs/images/data-grip-offline-store.jpg)
+![data-grip-offline-store](https://github.com/user-attachments/assets/cc004ebd-bae6-44fd-8323-ad14ea6aaf90)
+
 
 ### 🔄 Data and Training Pipeline (5 & 6)
 
@@ -428,7 +434,8 @@ This will start the Airflow service and the other services that are needed for t
 
 Go to the Airflow UI (default user and password is `airflow:airflow`) and you should see the `data_pipeline` and `training_pipeline` DAGs. These 2 DAGs are automatically triggered, but you can also trigger them manually.
 
-![Airflow DAGs](./docs/images/airflow-dags.jpg)
+![airflow-dags](https://github.com/user-attachments/assets/763cde72-1a5d-4b07-b908-fabe58f1cebe)
+
 
 #### 🔄 Data Pipeline (5)
 
@@ -452,17 +459,20 @@ make deploy_s3_connector
 
 To see the MinIO UI, you can go to `localhost:9001` (default user and password is `minioadmin:minioadmin`). There are 2 buckets, `validated-events-bucket` and `invalidated-events-bucket`, you can go to each bucket and you should see the events being synced.
 
-![MinIO Buckets](./docs/images/minio-buckets.jpg)
+![minio-buckets](https://github.com/user-attachments/assets/dde8aef1-ceff-41b7-96a3-83518dce0ac8)
+
 
 Each record in buckets is a JSON file, you can click on the file and you should see the event.
 
-![MinIO Record](./docs/images/minio-record.jpg)
+ ![minio-record](https://github.com/user-attachments/assets/bdd1c4cd-dcf6-4142-8b2b-31a7008d6257)
+
 
 ##### Data Pipeline
 
 The `data_pipeline` DAG is divided into three layers:
 
-![Data Pipeline DAG](./docs/images/data-pipeline-dag.jpg)
+![data-pipeline-dag](https://github.com/user-attachments/assets/c56d4842-1a2f-4256-9d4d-c18b9e98f908)
+
 
 ###### Bronze Layer:
 
@@ -493,7 +503,8 @@ Then go to `localhost:8089` and you should see the Superset dashboard. Connect t
 
 The `training_pipeline` DAG is composed of these steps:
 
-![Training Pipeline DAG](./docs/images/training-pipeline-dag.jpg)
+![training-pipeline-dag](https://github.com/user-attachments/assets/93d89eda-4d54-41e2-85ca-c63f2c59a0bd)
+
 
 1. **Load Data** - Pulls processed data from the Data Warehouse for use in training the machine learning model.
 2. **Tune Hyperparameters** - Utilizes Ray Tune to perform distributed hyperparameter tuning, optimizing the model's performance.
@@ -502,25 +513,30 @@ The `training_pipeline` DAG is composed of these steps:
 
 Trigger the `training_pipeline` DAG, and you should see the tasks running. This DAG will take some time to complete, but you can check the logs in the Airflow UI to see the progress.
 
-![Training Pipeline Tasks](./docs/images/training-pipeline-tasks.jpg)
+![training-pipeline-tasks](https://github.com/user-attachments/assets/b2db1368-f249-422b-b58a-f6eb819b73dd)
+
 
 After hitting the `Trigger DAG` button, you should see the tasks running. The `tune_hyperparameters` task will be `deferred` because it will submit the Ray Tune job to the Ray Cluster and use polling to check if the job is done. The same happens with the `train_final_model` task.
 
 When the `tune_hyperparameters` or `train_final_model` tasks are running, you can go to the Ray Dashboard at `localhost:8265` and you should see the tasks running.
 
-![Ray Dashboard](./docs/images/ray-dashboard.jpg)
+![ray-dashboard](https://github.com/user-attachments/assets/97be284f-3853-40ca-8628-5979b0258b86)
+
 
 Click on the task and you should see the task details, including the id, status, time, logs, and more.
 
-![Ray Task Details](./docs/images/ray-task-details.jpg)
+![ray-task-details](https://github.com/user-attachments/assets/346f809d-ed14-40e0-b3a3-b0f5ccd2b94c)
+
 
 To see the results of the training, you can go to the MLflow UI at `localhost:5001` and you should see the training results.
 
-![MLflow UI](./docs/images/mlflow-ui.jpg)
+![mlflow-ui](https://github.com/user-attachments/assets/0e68e388-79df-43ba-93de-95f066f65811)
+
 
 The model will be versioned in the Model Registry, you can go to `localhost:5001` and hit the `Models` tab and you should see the model.
 
-![MLflow Models](./docs/images/mlflow-models.jpg)
+![mlflow-models (1)](https://github.com/user-attachments/assets/c1f1e3e3-ce1f-4a36-91db-4be7edd4c430)
+
 
 ### 🚀 Start Serving Pipeline (7)
 
@@ -530,7 +546,8 @@ make up-serving
 
 This command will start the Serving Pipeline. Note that we did not port forward the `8000` port in the `docker-compose.serving.yaml` file, but we just expose it. The reason is that we use Ray Serve, and the job will be submitted to the Ray Cluster. That is the reason why you see the port `8000` in the `docker-compose.serving.ray` file instead of the `docker-compose.serving.yaml` file.
 
-![Serving Pipeline](./docs/images/serving-pipeline-swagger-ui.jpg)
+![serving-pipeline-swagger-ui](https://github.com/user-attachments/assets/ee888860-886e-4c61-a6a0-311d71a9030d)
+
 
 Currently, you have to manually restart the Ray Serve job (aka docker container) to load new model from the Model Registry. But in the future, I will add a feature to automatically load the new model from the Model Registry (Jenkins).
 
@@ -544,15 +561,18 @@ make up-observability
 
 This command will start the Observability Pipeline. This is a SigNoz instance that will receive the data from the OpenTelemetry Collector. Go to `localhost:3301` and you should see the SigNoz dashboard.
 
-![Observability](./docs/images/signoz-1.jpg)
+![signoz-1](https://github.com/user-attachments/assets/081a8566-9a13-4a1e-a94a-0650389664d6)
 
-![Observability](./docs/images/signoz-2.jpg)
+
+![signoz-2](https://github.com/user-attachments/assets/2dddaefc-a1d9-4a88-b003-789c10f31748)
+
 
 #### 📉 Prometheus and Grafana (9)
 
 To see the Ray Cluster information, you can go to `localhost:3009` (user/password: `admin:admin`) and you should see the Grafana dashboard.
 
-![Grafana](./docs/images/grafana.jpg)
+![grafana](https://github.com/user-attachments/assets/2edaea47-53dd-4e94-855c-6e2af6d66361)
+
 
 **Note**: If you dont see the dashboards, please remove the `tmp/ray` folder and then restart Ray Cluster and Grafana again.
 
@@ -581,8 +601,10 @@ Key configuration options include:
 
 **Security Tip**: Change the default password immediately after first login to protect your proxy configuration.
 
-![NGINX Proxy Manager 1](./docs/images/nginx-proxy-manager-1.jpg)
+![NGINX Proxy Manager 1] ![nginx-proxy-manager-1](https://github.com/user-attachments/assets/6f0af629-e777-49d3-a434-2e1a9ea72d0d)
 
-![NGINX Proxy Manager 2](./docs/images/nginx-proxy-manager-2.jpg)
+
+![NGINX Proxy Manager 2] ![nginx-proxy-manager-2](https://github.com/user-attachments/assets/7bdb792f-2bf9-4048-b558-049fad7448fe)
+
 
 ---
