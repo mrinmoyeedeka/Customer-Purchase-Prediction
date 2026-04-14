@@ -242,11 +242,13 @@ The last service in the `docker-compose.kafka.yaml` file is `kafka_producer`, th
 
 To check if Kafka is running, you can go to `localhost:9021` and you should see the Kafka dashboard. Then go to the `Topics` tab and you should see `tracking.raw_user_behavior` topic.
 
-![Kafka Topics](./docs/images/kafka-topic.jpg)
+![kafka-topic](https://github.com/user-attachments/assets/24a3c813-e38a-4968-8f6e-3a378f260a2a)
+
 
 To check if the producer is sending messages, you can click on the `tracking.raw_user_behavior` topic and you should see the messages being sent.
 
-![Kafka Messages](./docs/images/kafka-message.jpg)
+![kafka-message](https://github.com/user-attachments/assets/cc89adb9-5253-48a6-9c9a-c6ce14a7e9ab)
+
 
 Here is an example of the message's value in the `tracking.raw_user_behavior` topic:
 
